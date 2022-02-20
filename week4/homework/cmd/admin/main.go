@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"geektime-gocamp/week4/homework/internal/students"
-	stuEcho "geektime-gocamp/week4/homework/internal/students/http/echo"
-	stuMySQL "geektime-gocamp/week4/homework/internal/students/repo/mysql"
+	"geektime-gocamp/week4/homework/internal/student"
+	stuEcho "geektime-gocamp/week4/homework/internal/student/http/echo"
+	stuMySQL "geektime-gocamp/week4/homework/internal/student/repo/mysql"
 	"github.com/BurntSushi/toml"
 	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo/v4"
@@ -31,7 +31,7 @@ func main() {
 		mysqlEngine = engine
 	}
 	studentRepo := stuMySQL.New(mysqlEngine)
-	studentService := students.New(studentRepo)
+	studentService := student.New(studentRepo)
 	studentRegisterHandler := stuEcho.NewRegister(studentService)
 	studentUnregisterHandler := stuEcho.NewUnregister(studentService)
 	// start web service

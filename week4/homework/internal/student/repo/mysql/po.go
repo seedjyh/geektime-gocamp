@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"geektime-gocamp/week4/homework/internal/students"
+	"geektime-gocamp/week4/homework/internal/student"
 )
 
 type studentPO struct {
@@ -15,7 +15,7 @@ func (s *studentPO) TableName() string {
 	return "student"
 }
 
-func (s *studentPO) initFromStudentDO(do *students.StudentDO) *studentPO {
+func (s *studentPO) initFromStudentDO(do *student.StudentDO) *studentPO {
 	s.ID = 0
 	s.UID = do.UID.String()
 	s.RealName = do.RealName.String()

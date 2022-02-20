@@ -1,4 +1,4 @@
-package students
+package student
 
 import "context"
 

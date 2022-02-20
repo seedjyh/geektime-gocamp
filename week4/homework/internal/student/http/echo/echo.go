@@ -1,14 +1,14 @@
 package echo
 
 import (
-	"geektime-gocamp/week4/homework/internal/students"
+	"geektime-gocamp/week4/homework/internal/student"
 )
 
-func NewRegister(service *students.Service) *register {
+func NewRegister(service *student.Service) *register {
 	return &register{service: service}
 }
 
-func NewUnregister(service *students.Service) *unregister {
+func NewUnregister(service *student.Service) *unregister {
 	return &unregister{service: service}
 }
 

@@ -1,4 +1,4 @@
-package students
+package student
 
 type UID string
 

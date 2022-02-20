@@ -2,7 +2,7 @@ package echo
 
 import (
 	"context"
-	students2 "geektime-gocamp/week4/homework/internal/students"
+	students2 "geektime-gocamp/week4/homework/internal/student"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )

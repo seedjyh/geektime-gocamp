@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"geektime-gocamp/week4/homework/internal/code"
-	"geektime-gocamp/week4/homework/internal/students"
+	"geektime-gocamp/week4/homework/internal/student"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/pkg/errors"
@@ -19,7 +19,7 @@ func New(engine *xorm.Engine) *repository {
 	return &repository{engine: engine}
 }
 
-func (r *repository) Add(ctx context.Context, do *students.StudentDO) error {
+func (r *repository) Add(ctx context.Context, do *student.StudentDO) error {
 	po := new(studentPO).initFromStudentDO(do)
 	if cnt, err := r.engine.InsertOne(po); err != nil {
 		return err
@@ -30,7 +30,7 @@ func (r *repository) Add(ctx context.Context, do *students.StudentDO) error {
 	}
 }
 
-func (r *repository) DeleteByUID(ctx context.Context, uid students.UID) error {
+func (r *repository) DeleteByUID(ctx context.Context, uid student.UID) error {
 	if cnt, err := r.engine.Where(builder.Eq{"uid": uid.String()}).
 		Cols("is_deleted").Update(&studentPO{IsDeleted: true}); err != nil {
 		return err
