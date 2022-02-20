@@ -41,3 +41,9 @@ Date: Sun, 20 Feb 2022 13:55:05 GMT
     "message": "success"
 }
 ```
+
+## 依赖库
+
+- web框架：[labstack/echo/v4](github.com/labstack/echo/v4)
+- 配置文件读取：[BurntSushi/toml](github.com/BurntSushi/toml)
+- ORM框架：[go-xorm/xorm](github.com/go-xorm/xorm)
