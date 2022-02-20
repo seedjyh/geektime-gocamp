@@ -2,13 +2,9 @@ package main
 
 import (
 	"fmt"
-	"geektime-gocamp/week4/homework/internal/student"
-	stuEcho "geektime-gocamp/week4/homework/internal/student/http/echo"
-	stuMySQL "geektime-gocamp/week4/homework/internal/student/repo/mysql"
+	appAdmin "geektime-gocamp/week4/homework/internal/app/admin"
+	"geektime-gocamp/week4/homework/internal/pkg/app"
 	"github.com/BurntSushi/toml"
-	"github.com/go-xorm/xorm"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"os"
 )
 
@@ -19,28 +15,18 @@ func main() {
 		fmt.Printf("Invalid config, path=[%+v], error=[%+v]\n", configPath, err)
 		os.Exit(-1)
 	}
-	// build up
-	var mysqlEngine *xorm.Engine
-	if engine, err := xorm.NewEngine("mysql", config.MySQL.DataSourceName); err != nil {
-		fmt.Println("Invalid DSN, error=", err)
-		os.Exit(-1)
-	} else if err := engine.Ping(); err != nil {
-		fmt.Println("MySQL connect failed, error=", err)
-		os.Exit(-1)
-	} else {
-		mysqlEngine = engine
-	}
-	studentRepo := stuMySQL.New(mysqlEngine)
-	studentService := student.New(studentRepo)
-	studentRegisterHandler := stuEcho.NewRegister(studentService)
-	studentUnregisterHandler := stuEcho.NewUnregister(studentService)
-	// start web service
-	e := echo.New()
-	e.Use(middleware.Recover())
-	e.POST("/students/add", studentRegisterHandler.Handle)
-	e.DELETE("/students/:uid", studentUnregisterHandler.Handle)
-	if err := e.Start(config.Web.Address); err != nil {
-		fmt.Println("Start service failed, error=", err)
+	adminServer := appAdmin.NewServer(
+		appAdmin.WebAddress(config.Web.Address),
+		appAdmin.DataSourceName(config.MySQL.DataSourceName),
+	)
+	a := app.New(
+		app.Name("student.admin"),
+		app.Version("1.0.0"),
+		adminServer,
+	)
+	if err := a.Run(); err != nil {
+		fmt.Printf("Exit with error=[%+v]\n", err)
 		os.Exit(-1)
 	}
+	fmt.Printf("Finished")
 }
