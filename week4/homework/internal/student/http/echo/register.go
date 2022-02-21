@@ -2,13 +2,15 @@ package echo
 
 import (
 	"context"
-	students2 "geektime-gocamp/week4/homework/internal/student"
+	"errors"
+	"geektime-gocamp/week4/homework/internal/pkg/code"
+	"geektime-gocamp/week4/homework/internal/student"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 type register struct {
-	service *students2.Service
+	service *student.Service
 }
 
 type registerRequest struct {
@@ -21,15 +23,23 @@ func (r *register) Handle(c echo.Context) error {
 	if err := c.Bind(req); err != nil {
 		return err
 	}
-	do := &students2.StudentDO{
-		UID:      students2.UID(req.UID),
-		RealName: students2.RealName(req.RealName),
+	do := &student.StudentDO{
+		UID:      student.UID(req.UID),
+		RealName: student.RealName(req.RealName),
 	}
 	if err := r.service.Register(context.TODO(), do); err != nil {
-		return c.JSON(http.StatusBadRequest, &ResponseBody{
-			Code:    1,
-			Message: err.Error(),
-		})
+		var codeErr *code.Error
+		if errors.As(err, &codeErr) {
+			return c.JSON(http.StatusBadRequest, &ResponseBody{
+				Code:    codeErr.Code,
+				Message: err.Error(),
+			})
+		} else {
+			return c.JSON(http.StatusBadRequest, &ResponseBody{
+				Code:    -1,
+				Message: err.Error(),
+			})
+		}
 	}
 	return c.JSON(http.StatusOK, defaultSuccessResponse)
 }

@@ -16,7 +16,7 @@ Go进阶训练营（第7期）第4周作业。
 添加一个学生的信息：
 
 ```shell
-# http delete 127.0.0.1:9000/students/3020611017
+# http post 127.0.0.1:9000/students/add uid=3020611017 realName=jyh
 HTTP/1.1 200 OK
 Content-Length: 31
 Content-Type: application/json; charset=UTF-8
