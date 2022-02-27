@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+type Clock interface {
+	Now() time.Time
+}
+
+// RollingNumber 是一个滑动时间窗口计数器。
+// 循环使用固定长度的桶数组。
 type RollingNumber struct {
 	bucketDuration    time.Duration // 每个bucket的时间长度
 	maxBucketCount    int           // 最大bucket数
@@ -15,12 +21,6 @@ type RollingNumber struct {
 	buckets           []*Bucket     // bucket数组，滚动使用
 	mutex             sync.RWMutex  // 整个对象的读写锁
 	clock             Clock         // 时钟接口，一般直接使用系统时钟，但测试的时候会使用其他时钟。
-}
-
-type SystemClock struct{}
-
-func (s SystemClock) Now() time.Time {
-	return time.Now()
 }
 
 // NewRollingNumber 创建一个新的时间窗口计数器
@@ -53,7 +53,7 @@ func (r *RollingNumber) Increase(v int64) {
 // SumUp 统计所有窗口的所有采样值
 func (r *RollingNumber) SumUp() int64 {
 	now := r.Now()
-	_, _ = r.getCurrentBucket(now)
+	_, _ = r.getCurrentBucket(now) // 将过期的 Bucket 刷掉
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
 	var total int64 = 0
@@ -129,6 +129,7 @@ func (r *RollingNumber) assureCurrentBucket(now time.Time) (*Bucket, bool) {
 }
 
 // removeExpiredBuckets 移除 buckets 数组里已经过期的 Bucket 。
+// 这里过期的 Bucket 是指，如果保留这个 Bucket ，会导致 now 所属的 Bucket 无法进入 buckets 数组。
 // 此函数必须在写锁已经锁定时调用。
 func (r *RollingNumber) removeExpiredBuckets(now time.Time) {
 	maxDuration := r.bucketDuration * time.Duration(r.maxBucketCount)
