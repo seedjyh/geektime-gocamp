@@ -23,4 +23,3 @@ func work(wg *sync.WaitGroup) {
 	}
 	wg.Done()
 }
-
