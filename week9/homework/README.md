@@ -38,7 +38,11 @@
 
 典型的 length field based frame decoder 例子：
 
-字节下标 | 字节含义 -|- 0 | 帧长度LB（lower bits） 1 | 帧长度UB（upper bits） `2` ~ `2+(UB<<8|LB)-1` | 帧体，有`(UB << 8 | LB)`个字节)
+字节下标            | 字节含义
+--------------- | -----------------
+0               | 帧长度LB（lower bits）
+1               | 帧长度UB（upper bits）
+`2` ~ `2+(UB<<8 | LB)-1`            | 帧体，有`(UB << 8 | LB)`个字节)
 
 HTTP的请求体的长度由HTTP头里的`Content-Length`描述，所以也是 length field based frame decoder 类型的。
 
