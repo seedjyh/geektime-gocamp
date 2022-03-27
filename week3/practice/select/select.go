@@ -18,7 +18,7 @@ func query(q string) string {
 func main() {
 	ch := make(chan string)
 	res := make(chan string, 1)
-	go func(){
+	go func() {
 		select {
 		case ch <- query("q1"):
 			res <- "to-ch-1"
@@ -31,11 +31,10 @@ func main() {
 	fmt.Println("main start wait")
 	for {
 		select {
-		case x := <- ch:
+		case x := <-ch:
 			fmt.Println("main ch:", x)
-		case x := <- res:
+		case x := <-res:
 			fmt.Println("main res:", x)
 		}
 	}
 }
-

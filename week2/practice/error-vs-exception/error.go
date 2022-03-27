@@ -33,4 +33,3 @@ func main() {
 	fmt.Printf("stack%%+v: %+v\n", e)
 	// fmt.Println("end")
 }
-

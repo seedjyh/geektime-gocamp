@@ -9,7 +9,7 @@ type IceCreamMaker interface {
 }
 
 type Ben struct {
-	id int
+	id   int
 	name string
 }
 
@@ -25,13 +25,12 @@ func (j *Jerry) Hello() {
 	fmt.Printf("Jerry says: Hello my name is %s\n", j.name)
 }
 
-
 func main() {
-	ben := &Ben{10,"Ben"}
+	ben := &Ben{10, "Ben"}
 	jerry := &Jerry{"Jerry"}
 	var maker IceCreamMaker = ben
 	var loop0, loop1 func()
-	loop0 = func(){
+	loop0 = func() {
 		maker = ben
 		go loop1()
 	}
@@ -45,7 +44,7 @@ func main() {
 		fmt.Println("PANIC!")
 		recover()
 	}()
-	for  {
+	for {
 		maker.Hello()
 	}
 }

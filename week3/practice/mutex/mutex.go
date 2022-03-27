@@ -12,7 +12,7 @@ func main() {
 	g1 := 0
 	g2 := 0
 	// g1
-	go func () {
+	go func() {
 		for {
 			select {
 			case <-done:

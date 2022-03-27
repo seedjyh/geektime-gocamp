@@ -21,7 +21,7 @@ func (t *task) Do() error {
 }
 
 func main() {
-	g, ctx :=  errgroup.WithContext(context.Background())
+	g, ctx := errgroup.WithContext(context.Background())
 	tasks := []*task{
 		{1, time.Second * 2, nil},
 		{2, time.Second * 4, errors.New("err2")},

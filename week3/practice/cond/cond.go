@@ -7,9 +7,9 @@ import (
 )
 
 type Queue struct {
-	mu sync.Mutex
+	mu    sync.Mutex
 	items []string
-	cond sync.Cond
+	cond  sync.Cond
 }
 
 func NewQueue() *Queue {

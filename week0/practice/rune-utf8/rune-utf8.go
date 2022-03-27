@@ -13,4 +13,3 @@ func main() {
 	fmt.Println("len(a) => ", len(a))
 	fmt.Println("cap(a) => ", cap(a))
 }
-

@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(1 * time.Second))
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(1*time.Second))
 
 	cancel()
 	time.Sleep(time.Second * 2)

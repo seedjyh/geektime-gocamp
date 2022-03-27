@@ -52,13 +52,13 @@ func (a *app) Run() error {
 	}
 	var err error
 	select {
-	case <- egctx.Done(): // 某个 errgroup 的 error 返回了
+	case <-egctx.Done(): // 某个 errgroup 的 error 返回了
 		a.stopAll()
 		err = eg.Wait()
-	case sig := <- signalChannel: // 收到了系统信号
+	case sig := <-signalChannel: // 收到了系统信号
 		a.stopAll()
 		err = &SignalCancel{sig}
-	case <- a.stopChannel:
+	case <-a.stopChannel:
 		a.stopAll()
 		err = stopped
 	}

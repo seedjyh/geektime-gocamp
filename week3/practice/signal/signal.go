@@ -18,14 +18,14 @@ func main() {
 	timer10 := time.NewTimer(time.Second * 10)
 	for {
 		select {
-		case x := <- ch1:
+		case x := <-ch1:
 			fmt.Println("ch1 received", x)
-		case x := <- ch2:
+		case x := <-ch2:
 			fmt.Println("ch2 received", x)
-		case <- timer3.C:
+		case <-timer3.C:
 			fmt.Println("stop interrupt")
 			signal.Reset(os.Interrupt)
-		case <- timer10.C:
+		case <-timer10.C:
 			return
 		}
 	}
