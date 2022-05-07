@@ -1,9 +1,0 @@
-<seelog>
-    <outputs formatid="my-json">
-        <console />
-        <rollingfile filename="logs/my-json.log" type="size" maxsize="536870912" />
-    </outputs>
-    <formats>
-        <format id="my-json" format='{"time":%Ns,"lev":"%Level","msg":"%Msg","path":"%RelFile","func":"%Func", "tags":%Tags, "fields":%Fields}%n'/>
-    </formats>
-</seelog>

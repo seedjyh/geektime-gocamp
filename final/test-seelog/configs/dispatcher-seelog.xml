@@ -1,6 +1,0 @@
-<seelog>
-    <outputs>
-        <console />
-        <file path="file.log"/>
-    </outputs>
-</seelog>
