@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "grpc-test/api";
+
+service Auth {
+  rpc SetUserToken(UserIdAndToken) returns (google.protobuf.Empty) {}
+  rpc GetUserToken(UserId) returns (UserIdAndToken) {}
+}
+
+message UserId {
+  string id = 1;
+}
+
+message UserToken {
+  string token = 1;
+}
+
+message UserIdAndToken {
+  UserId user_id = 1;
+  string Token = 2;
+}
