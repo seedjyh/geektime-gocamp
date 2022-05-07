@@ -1,0 +1,9 @@
+<seelog>
+    <outputs formatid="advanced-json">
+        <console />
+        <rollingfile filename="logs/advanced-json.log" type="size" maxsize="536870912" />
+    </outputs>
+    <formats>
+        <format id="advanced-json" format='{"time":%Ns,"lev":"%Level","msg":"%Msg","path":"%RelFile","func":"%Func", "reqId":"%ReqId"}%n'/>
+    </formats>
+</seelog>
