@@ -49,6 +49,9 @@ func NewServer(options ...ServerOption) (s *Server) {
 	// start web service
 	e := echo.New()
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig)) // 允许跨站访问
+	e.Pre(appendSessionID())
+	e.Use(recordLatency(), dumpRequest(), dumpResponse())
 	e.POST("/binding", bindingHandler.Bind)
 	e.DELETE("/binding/:bind_id", bindingHandler.Unbind)
 	s.echoEngine = e
