@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// xbr client
+// xbrClient 是通过gRPC调用xbr服务，以实现绑定和解绑的gRPC客户端。
 type xbrClient struct {
 	address string
 }
