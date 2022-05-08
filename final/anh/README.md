@@ -15,3 +15,8 @@ go run cmd/service/xbr/main.go -app_config=configs/default/service/xbr/config.in
 # 启动user-interface
 go run cmd/interface/user/main.go -app_config=configs/default/interface/user/config.ini -log_config=configs/default/interface/user/seelog.xml
 ```
+
+## 使用的技术
+
+- **user-interface**和**xbr-service**之间通过gRPC通信。
+- 使用uuid生成长度32的字符串。
