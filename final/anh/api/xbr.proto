@@ -14,7 +14,6 @@ message BindRequest {
   string tel_a = 1;
   string tel_x = 2;
   string tel_b = 3;
-  string user_id = 4;
 }
 
 message BindReply {
@@ -23,7 +22,6 @@ message BindReply {
 
 message UnbindRequest {
   string bind_id = 1;
-  string user_id = 2;
 }
 
 message UnbindReply {

@@ -28,9 +28,14 @@ type auth struct {
 	Address string `toml:"address"`
 }
 
+type xbr struct {
+	Address string `toml:"address"`
+}
+
 type config struct {
 	Web  web  `toml:"web"`
 	Auth auth `toml:"auth"`
+	Xbr  xbr  `toml:"xbr"`
 }
 
 func main() {
@@ -49,6 +54,7 @@ func main() {
 	appServer := appUser.NewServer(
 		appUser.WebAddress(config.Web.Address),
 		appUser.AuthAddress(config.Auth.Address),
+		appUser.XBRAddress(config.Xbr.Address),
 	)
 	a := app.New(
 		appName,

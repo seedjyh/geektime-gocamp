@@ -1,11 +1,17 @@
 package user
 
 import (
+	"context"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 type bindingHandler struct {
+	xbrClient *xbrClient
+}
+
+func newBindingHandler(client *xbrClient) *bindingHandler {
+	return &bindingHandler{xbrClient: client}
 }
 
 type BindRequestBody struct {
@@ -48,19 +54,35 @@ func invalidQueryParameter(c echo.Context, data interface{}) error {
 	})
 }
 
+func internalError(c echo.Context, data interface{}) error {
+	return c.JSON(http.StatusInternalServerError, &ResponseBody{
+		Code:    3,
+		Message: "internal error",
+		Data:    data,
+	})
+}
+
 func (h *bindingHandler) Bind(c echo.Context) error {
 	body := new(BindRequestBody)
 	if err := c.Bind(body); err != nil {
 		return invalidRequestBody(c, nil)
 	}
-	bindID := "-new-bind-id-"
-	return success(c, &BindResponseData{BindID: bindID})
+	if bindId, err := h.xbrClient.Bind(context.Background(), &BindParameter{
+		TelA: Number(body.TelA),
+		TelX: Number(body.TelX),
+		TelB: Number(body.TelB),
+	}); err != nil {
+		return internalError(c, map[string]string{"error": err.Error()})
+	} else {
+		return success(c, &BindResponseData{BindID: bindId.String()})
+	}
 }
 
 func (h *bindingHandler) Unbind(c echo.Context) error {
 	bindID := c.Param("bind_id")
-	if len(bindID) < 10 {
-		return invalidQueryParameter(c, map[string]interface{}{"bind_id": bindID})
+	if err := h.xbrClient.Unbind(context.Background(), BindId(bindID)); err != nil {
+		return internalError(c, map[string]string{"error": err.Error()})
+	} else {
+		return success(c, nil)
 	}
-	return success(c, nil)
 }

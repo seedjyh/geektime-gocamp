@@ -10,6 +10,7 @@ type Server struct {
 	err         error
 	webAddress  string
 	authAddress string
+	xbrAddress  string
 	echoEngine  *echo.Echo
 }
 type ServerOption func(s *Server)
@@ -26,19 +27,25 @@ func AuthAddress(address string) ServerOption {
 	}
 }
 
+func XBRAddress(address string) ServerOption {
+	return func(s *Server) {
+		s.xbrAddress = address
+	}
+}
+
 func NewServer(options ...ServerOption) (s *Server) {
 	s = &Server{
 		err:         nil,
 		webAddress:  "0.0.0.0:8080",
 		authAddress: "127.0.0.1:8081",
+		xbrAddress:  "127.0.0.1:8082",
 	}
 	for _, opt := range options {
 		opt(s)
 	}
 	// build up
-	// authService := auth.New(...) 包含了gRPC调用auth
-	// bindingService := bind.New(...) 包含了gRPC调用binding
-	bindingHandler := &bindingHandler{}
+	xbrClient := newXBRClient(s.xbrAddress)
+	bindingHandler := newBindingHandler(xbrClient)
 	// start web service
 	e := echo.New()
 	e.Use(middleware.Recover())
