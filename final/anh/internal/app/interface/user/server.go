@@ -12,6 +12,19 @@ type Server struct {
 	authAddress string
 	echoEngine  *echo.Echo
 }
+type ServerOption func(s *Server)
+
+func WebAddress(address string) ServerOption {
+	return func(s *Server) {
+		s.webAddress = address
+	}
+}
+
+func AuthAddress(address string) ServerOption {
+	return func(s *Server) {
+		s.authAddress = address
+	}
+}
 
 func NewServer(options ...ServerOption) (s *Server) {
 	s = &Server{
