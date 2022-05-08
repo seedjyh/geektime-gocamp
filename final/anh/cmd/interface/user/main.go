@@ -49,7 +49,7 @@ func main() {
 	}
 	appServer := appUser.NewServer(
 		appUser.WebAddress(config.Web.Address),
-		appUser.XBRClientOption(xbr.NewXBRClient(config.Xbr.Address)),
+		appUser.XBRClientOption(xbr.NewClient(config.Xbr.Address)),
 	)
 	a := app.New(
 		appName,

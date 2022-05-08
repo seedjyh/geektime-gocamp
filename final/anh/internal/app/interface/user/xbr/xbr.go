@@ -11,17 +11,17 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-type xbrClient struct {
+type client struct {
 	address string
 }
 
-func NewXBRClient(address string) *xbrClient {
-	return &xbrClient{
+func NewClient(address string) *client {
+	return &client{
 		address: address,
 	}
 }
 
-func (c *xbrClient) Bind(ctx context.Context, parameter *user.BindParameter) (user.BindId, error) {
+func (c *client) Bind(ctx context.Context, parameter *user.BindParameter) (user.BindId, error) {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	// connect
@@ -44,7 +44,7 @@ func (c *xbrClient) Bind(ctx context.Context, parameter *user.BindParameter) (us
 	}
 }
 
-func (c *xbrClient) Unbind(ctx context.Context, bindId user.BindId) error {
+func (c *client) Unbind(ctx context.Context, bindId user.BindId) error {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	// connect
