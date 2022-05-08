@@ -1,7 +1,7 @@
 package seelog
 
 import (
-	"anh/pkg/mylog"
+	"anh/internal/pkg/mylog"
 	"encoding/json"
 	"github.com/MenInBack/seelog"
 )
