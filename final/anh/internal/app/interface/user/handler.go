@@ -1,9 +1,11 @@
 package user
 
 import (
+	"anh/internal/pkg/mylog"
 	"context"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"time"
 )
 
 type bindingHandler struct {
@@ -62,16 +64,36 @@ func internalError(c echo.Context, data interface{}) error {
 	})
 }
 
+func withSessionID(c echo.Context) (context.Context, *mylog.Logger) {
+	sessionID := getSessionID(c)
+	ctx := context.WithValue(context.Background(), "session_id", sessionID)
+	logger := mylog.CloneLogger().WithTag("session_id", sessionID)
+	return ctx, logger
+}
+
 func (h *bindingHandler) Bind(c echo.Context) error {
+	ctx, logger := withSessionID(c)
+	ctx, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
 	body := new(BindRequestBody)
 	if err := c.Bind(body); err != nil {
+		_ = logger.CloneLogger().WithFields(mylog.Error("error", err)).Error("parse request body failed")
 		return invalidRequestBody(c, nil)
 	}
-	if bindId, err := h.xbrClient.Bind(context.Background(), &BindParameter{
+	parameter := &BindParameter{
 		TelA: Number(body.TelA),
 		TelX: Number(body.TelX),
 		TelB: Number(body.TelB),
-	}); err != nil {
+	}
+	if err := parameter.AssertValid(); err != nil {
+		_ = logger.CloneLogger().
+			WithFields(mylog.String("parameter", parameter.String())).
+			WithFields(mylog.Error("error", err)).
+			Error("parse request body failed")
+		return invalidQueryParameter(c, map[string]string{"error": err.Error()})
+	}
+	if bindId, err := h.xbrClient.Bind(ctx, parameter); err != nil {
+		_ = logger.WithFields(mylog.Error("error", err)).Error("xbr bind failed")
 		return internalError(c, map[string]string{"error": err.Error()})
 	} else {
 		return success(c, &BindResponseData{BindID: bindId.String()})
@@ -79,8 +101,12 @@ func (h *bindingHandler) Bind(c echo.Context) error {
 }
 
 func (h *bindingHandler) Unbind(c echo.Context) error {
+	ctx, logger := withSessionID(c)
+	ctx, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
 	bindID := c.Param("bind_id")
-	if err := h.xbrClient.Unbind(context.Background(), BindId(bindID)); err != nil {
+	if err := h.xbrClient.Unbind(ctx, BindId(bindID)); err != nil {
+		_ = logger.WithFields(mylog.Error("error", err)).Error("xbr unbind failed")
 		return internalError(c, map[string]string{"error": err.Error()})
 	} else {
 		return success(c, nil)

@@ -28,6 +28,14 @@ func appendSessionID() echo.MiddlewareFunc {
 	}
 }
 
+func getSessionID(c echo.Context) string {
+	if v, ok := c.Get(echoKeySessionID).(string); ok {
+		return v
+	} else {
+		return "not-defined"
+	}
+}
+
 // recordLatency 返回一个MiddlewareFunc，能计算处理请求的耗时，并打印出来。
 func recordLatency() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {

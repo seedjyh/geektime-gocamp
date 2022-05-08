@@ -20,3 +20,5 @@ go run cmd/interface/user/main.go -app_config=configs/default/interface/user/con
 
 - **user-interface**和**xbr-service**之间通过gRPC通信。
 - 使用uuid生成长度32的字符串。
+- 自己写的mylog
+- 自己写的echo中间件，能加入sessionID、打印请求体、响应体、执行时间。
