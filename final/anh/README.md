@@ -22,11 +22,11 @@ XBR|X Binding Register（绑定关系注册表）
 
 ## 组网图
 
-当前ANH仅实现了从用户端（例如网页车公司）发起绑定和解绑的功能。系统启动后的组网结构如下：
+当前ANH仅实现了从用户端（例如网约车公司）发起绑定和解绑的功能。系统启动后的组网结构如下：
 
 ```mermaid
 graph LR
-    subgraph 网约车公司
+    subgraph 用户端
         user-client
     end
     subgraph ANH
@@ -63,7 +63,7 @@ http delete 127.0.0.1:9000/binding/6277d72d7482ed976805def6f0c5341e
 - [toml](https://github.com/BurntSushi/toml)：配置文件读取器。
 - [echo](https://echo.labstack.com/)：web框架。
 - [seelog](https://github.com/cihub/seelog)：日志中间件。
-- gRPC。
+- [gRPC](https://grpc.io/)。
 
 ## 使用的技术
 
