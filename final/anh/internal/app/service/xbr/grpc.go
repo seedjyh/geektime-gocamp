@@ -5,6 +5,7 @@ import (
 	"anh/internal/pkg/mylog"
 	"anh/internal/pkg/uuid"
 	"context"
+	"google.golang.org/grpc/metadata"
 )
 
 type xbrServer struct {
@@ -21,16 +22,22 @@ func newXBRServer() *xbrServer {
 }
 
 func (s *xbrServer) Bind(ctx context.Context, request *pb.BindRequest) (*pb.BindReply, error) {
+	logger := mylog.CloneLogger().WithTag("app", "xbr-service")
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		if v := md.Get("session_id"); len(v) > 0 {
+			logger = logger.WithTag("session_id", v[0])
+		}
+	}
 	telA := request.TelA
 	telX := request.TelX
 	telB := request.TelB
-	mylog.CloneLogger().WithTag("app", "xbr-service").
+	logger.CloneLogger().
 		WithFields(mylog.String("tel_a", telA)).
 		WithFields(mylog.String("tel_x", telX)).
 		WithFields(mylog.String("tel_b", telB)).
 		Info("received bind request")
 	bindId := s.bindIdGen.Next()
-	mylog.CloneLogger().WithFields(mylog.String("bind_id", bindId)).
+	logger.CloneLogger().WithFields(mylog.String("bind_id", bindId)).
 		Info("created a new bind id")
 	s.id2data[bindId] = map[string]interface{}{
 		"tel_a":   telA,
@@ -42,14 +49,25 @@ func (s *xbrServer) Bind(ctx context.Context, request *pb.BindRequest) (*pb.Bind
 }
 
 func (s *xbrServer) Unbind(ctx context.Context, request *pb.UnbindRequest) (*pb.UnbindReply, error) {
+	logger := mylog.CloneLogger().WithTag("app", "xbr-service")
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		if v := md.Get("session_id"); len(v) > 0 {
+			logger = logger.WithTag("session_id", v[0])
+		}
+	}
 	bindId := request.BindId
-	mylog.CloneLogger().WithTag("app", "xbr-service").
+	logger.CloneLogger().
 		WithFields(mylog.String("bind_id", bindId)).
 		Info("received unbind request")
 	if _, ok := s.id2data[bindId]; ok {
 		delete(s.id2data, bindId)
+		logger.CloneLogger().
+			WithFields(mylog.String("bind_id", bindId)).
+			Info("found and unbind the binding")
 	} else {
-		mylog.CloneLogger().Info("no such bind_id")
+		logger.CloneLogger().
+			WithFields(mylog.String("bind_id", bindId)).
+			Info("no such bind_id")
 	}
 	return &pb.UnbindReply{BindId: bindId}, nil
 }
