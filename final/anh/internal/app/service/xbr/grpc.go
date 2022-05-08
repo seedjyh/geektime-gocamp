@@ -22,7 +22,7 @@ func newXBRServer() *xbrServer {
 }
 
 func (s *xbrServer) Bind(ctx context.Context, request *pb.BindRequest) (*pb.BindReply, error) {
-	logger := mylog.CloneLogger().WithTag("app", "xbr-service")
+	logger := mylog.CloneLogger()
 	if md, ok := metadata.FromIncomingContext(ctx); ok {
 		if v := md.Get("session_id"); len(v) > 0 {
 			logger = logger.WithTag("session_id", v[0])
@@ -49,7 +49,7 @@ func (s *xbrServer) Bind(ctx context.Context, request *pb.BindRequest) (*pb.Bind
 }
 
 func (s *xbrServer) Unbind(ctx context.Context, request *pb.UnbindRequest) (*pb.UnbindReply, error) {
-	logger := mylog.CloneLogger().WithTag("app", "xbr-service")
+	logger := mylog.CloneLogger()
 	if md, ok := metadata.FromIncomingContext(ctx); ok {
 		if v := md.Get("session_id"); len(v) > 0 {
 			logger = logger.WithTag("session_id", v[0])
