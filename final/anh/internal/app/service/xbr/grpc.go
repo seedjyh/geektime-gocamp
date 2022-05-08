@@ -3,18 +3,20 @@ package xbr
 import (
 	pb "anh/api"
 	"anh/internal/pkg/mylog"
+	"anh/internal/pkg/uuid"
 	"context"
-	"math/rand"
 )
 
 type xbrServer struct {
 	pb.UnimplementedXBRServer
-	id2data map[string]interface{}
+	id2data   map[string]interface{}
+	bindIdGen uuid.Generator
 }
 
 func newXBRServer() *xbrServer {
 	return &xbrServer{
-		id2data: make(map[string]interface{}),
+		id2data:   make(map[string]interface{}),
+		bindIdGen: uuid.NewUUID32Generator(),
 	}
 }
 
@@ -27,7 +29,7 @@ func (s *xbrServer) Bind(ctx context.Context, request *pb.BindRequest) (*pb.Bind
 		WithFields(mylog.String("tel_x", telX)).
 		WithFields(mylog.String("tel_b", telB)).
 		Info("received bind request")
-	bindId := s.randomBindID()
+	bindId := s.bindIdGen.Next()
 	mylog.CloneLogger().WithFields(mylog.String("bind_id", bindId)).
 		Info("created a new bind id")
 	s.id2data[bindId] = map[string]interface{}{
@@ -37,17 +39,6 @@ func (s *xbrServer) Bind(ctx context.Context, request *pb.BindRequest) (*pb.Bind
 		"bind_id": bindId,
 	}
 	return &pb.BindReply{BindId: bindId}, nil
-}
-
-var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-func (s *xbrServer) randomBindID() string {
-	const bindIDLen = 10
-	b := make([]rune, bindIDLen)
-	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))]
-	}
-	return string(b)
 }
 
 func (s *xbrServer) Unbind(ctx context.Context, request *pb.UnbindRequest) (*pb.UnbindReply, error) {

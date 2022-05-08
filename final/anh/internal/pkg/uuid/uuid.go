@@ -10,7 +10,11 @@ import (
 	"time"
 )
 
-// Generator 生成长度32的16进制字符串。
+type Generator interface {
+	Next() string
+}
+
+// uuid32Generator 生成长度32的16进制字符串。
 // 生成规则：
 // 1) 先按照下面方式生成16字节（128bit）的整数。
 // 		[0]~[3]   4 bytes: 最近一次更新的unix秒（从1970-01-01开始）
@@ -19,7 +23,7 @@ import (
 // 		[9]~[11]  3 bytes: 秒内递增数的低3字节。
 // 		[12]~[15] 4 bytes: 随机串，防猜测。
 // 2) 然后每4个bit转化成一个16进制字符。
-type Generator struct {
+type uuid32Generator struct {
 	latestSecond     int64
 	increaseInSecond uint32
 	machineCode      [3]byte
@@ -27,8 +31,8 @@ type Generator struct {
 	idChan           chan string
 }
 
-func NewGenerator() *Generator {
-	gen := &Generator{
+func NewUUID32Generator() *uuid32Generator {
+	gen := &uuid32Generator{
 		latestSecond:     0,
 		increaseInSecond: 0,
 		machineCode:      getMachineCode(),
@@ -39,11 +43,11 @@ func NewGenerator() *Generator {
 	return gen
 }
 
-func (g *Generator) Channel() <-chan string {
-	return g.idChan
+func (g *uuid32Generator) Next() string {
+	return <-g.idChan
 }
 
-func (g *Generator) keepGenerating() {
+func (g *uuid32Generator) keepGenerating() {
 	for {
 		g.updateTimePart()
 		var buf [16]byte
@@ -71,7 +75,7 @@ func (g *Generator) keepGenerating() {
 	}
 }
 
-func (g *Generator) updateTimePart() {
+func (g *uuid32Generator) updateTimePart() {
 	now := time.Now().Unix()
 	if g.latestSecond != now {
 		g.latestSecond = now

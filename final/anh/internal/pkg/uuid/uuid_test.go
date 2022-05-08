@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewGenerator(t *testing.T) {
-	c := NewGenerator().Channel()
-	fmt.Println(<-c)
-	fmt.Println(<-c)
+	c := NewUUID32Generator()
+	fmt.Println(c.Next())
+	fmt.Println(c.Next())
 }
