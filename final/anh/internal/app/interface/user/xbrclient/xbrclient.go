@@ -1,5 +1,5 @@
-// Package xbr 用gRPC方式实现了XBRClient接口，通过gRPC调用xbr服务，以实现绑定和解绑。
-package xbr
+// Package xbrclient 用gRPC方式实现了XBRClient接口，通过gRPC调用xbr服务，以实现绑定和解绑。
+package xbrclient
 
 import (
 	pb "anh/api"

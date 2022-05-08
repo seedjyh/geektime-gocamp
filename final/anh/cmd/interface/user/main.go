@@ -2,7 +2,7 @@ package main
 
 import (
 	appUser "anh/internal/app/interface/user"
-	"anh/internal/app/interface/user/xbr"
+	"anh/internal/app/interface/user/xbrclient"
 	"anh/internal/pkg/app"
 	"anh/internal/pkg/mylog"
 	mySeelog "anh/internal/pkg/mylog/receiver/seelog"
@@ -49,7 +49,7 @@ func main() {
 	}
 	appServer := appUser.NewServer(
 		appUser.WebAddress(config.Web.Address),
-		appUser.XBRClientOption(xbr.NewClient(config.Xbr.Address)),
+		appUser.XBRClientOption(xbrclient.NewClient(config.Xbr.Address)),
 	)
 	a := app.New(
 		appName,
