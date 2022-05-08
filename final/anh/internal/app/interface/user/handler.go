@@ -9,10 +9,10 @@ import (
 )
 
 type bindingHandler struct {
-	xbrClient *xbrClient
+	xbrClient XBRClient
 }
 
-func newBindingHandler(client *xbrClient) *bindingHandler {
+func newBindingHandler(client XBRClient) *bindingHandler {
 	return &bindingHandler{xbrClient: client}
 }
 

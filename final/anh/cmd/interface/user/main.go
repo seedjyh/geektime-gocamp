@@ -2,6 +2,7 @@ package main
 
 import (
 	appUser "anh/internal/app/interface/user"
+	"anh/internal/app/interface/user/xbr"
 	"anh/internal/pkg/app"
 	"anh/internal/pkg/mylog"
 	mySeelog "anh/internal/pkg/mylog/receiver/seelog"
@@ -20,17 +21,17 @@ const (
 	appVersion = "1.0.0"
 )
 
-type web struct {
+type webConfig struct {
 	Address string `toml:"address"`
 }
 
-type xbr struct {
+type xbrConfig struct {
 	Address string `toml:"address"`
 }
 
 type config struct {
-	Web web `toml:"web"`
-	Xbr xbr `toml:"xbr"`
+	Web webConfig `toml:"web"`
+	Xbr xbrConfig `toml:"xbr"`
 }
 
 func main() {
@@ -48,7 +49,7 @@ func main() {
 	}
 	appServer := appUser.NewServer(
 		appUser.WebAddress(config.Web.Address),
-		appUser.XBRAddress(config.Xbr.Address),
+		appUser.XBRClientOption(xbr.NewXBRClient(config.Xbr.Address)),
 	)
 	a := app.New(
 		appName,

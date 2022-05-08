@@ -9,7 +9,7 @@ import (
 type Server struct {
 	err        error
 	webAddress string
-	xbrAddress string
+	xbrClient  XBRClient
 	echoEngine *echo.Echo
 }
 type ServerOption func(s *Server)
@@ -20,24 +20,21 @@ func WebAddress(address string) ServerOption {
 	}
 }
 
-func XBRAddress(address string) ServerOption {
+func XBRClientOption(client XBRClient) ServerOption {
 	return func(s *Server) {
-		s.xbrAddress = address
+		s.xbrClient = client
 	}
 }
 
 func NewServer(options ...ServerOption) (s *Server) {
 	s = &Server{
-		err:        nil,
 		webAddress: "0.0.0.0:8080",
-		xbrAddress: "127.0.0.1:8082",
 	}
 	for _, opt := range options {
 		opt(s)
 	}
 	// build up
-	xbrClient := newXBRClient(s.xbrAddress)
-	bindingHandler := newBindingHandler(xbrClient)
+	bindingHandler := newBindingHandler(s.xbrClient)
 	// start web service
 	e := echo.New()
 	e.Use(middleware.Recover())
