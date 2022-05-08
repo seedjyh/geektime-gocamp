@@ -1,7 +1,7 @@
 <seelog>
     <outputs formatid="mylog-json">
         <console />
-        <rollingfile filename="logs/mylog-json.log" type="size" maxsize="536870912" />
+        <rollingfile filename="logs/xbr-service.log" type="size" maxsize="536870912" />
     </outputs>
     <formats>
         <format id="mylog-json" format='{"time":%Ns,"lev":"%Level","tags":%Tags,"fields":%Fields,"msg":"%Msg"}%n'/>

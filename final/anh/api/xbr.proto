@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package anh.xbr;
+
+option go_package = "anh/api";
+
+// protoc `--go_out=. `--go_opt=paths=source_relative `--go-grpc_out=. `--go-grpc_opt=paths=source_relative xbr.proto
+service XBR {
+  rpc Bind(BindRequest) returns (BindReply) {}
+  rpc Unbind(UnbindRequest) returns (UnbindReply) {}
+}
+
+message BindRequest {
+  string tel_a = 1;
+  string tel_x = 2;
+  string tel_b = 3;
+  string user_id = 4;
+}
+
+message BindReply {
+  string bind_id = 1;
+}
+
+message UnbindRequest {
+  string bind_id = 1;
+  string user_id = 2;
+}
+
+message UnbindReply {
+  string bind_id = 1;
+}
