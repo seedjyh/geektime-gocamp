@@ -7,23 +7,16 @@ import (
 )
 
 type Server struct {
-	err         error
-	webAddress  string
-	authAddress string
-	xbrAddress  string
-	echoEngine  *echo.Echo
+	err        error
+	webAddress string
+	xbrAddress string
+	echoEngine *echo.Echo
 }
 type ServerOption func(s *Server)
 
 func WebAddress(address string) ServerOption {
 	return func(s *Server) {
 		s.webAddress = address
-	}
-}
-
-func AuthAddress(address string) ServerOption {
-	return func(s *Server) {
-		s.authAddress = address
 	}
 }
 
@@ -35,10 +28,9 @@ func XBRAddress(address string) ServerOption {
 
 func NewServer(options ...ServerOption) (s *Server) {
 	s = &Server{
-		err:         nil,
-		webAddress:  "0.0.0.0:8080",
-		authAddress: "127.0.0.1:8081",
-		xbrAddress:  "127.0.0.1:8082",
+		err:        nil,
+		webAddress: "0.0.0.0:8080",
+		xbrAddress: "127.0.0.1:8082",
 	}
 	for _, opt := range options {
 		opt(s)
