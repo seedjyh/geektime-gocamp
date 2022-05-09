@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/BurntSushi/toml v1.1.0
 	github.com/cihub/seelog v0.0.0-20170130134532-f561c5e57575
+	github.com/golang/mock v1.6.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0

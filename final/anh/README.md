@@ -15,10 +15,7 @@ ANH是一个为电话呼叫实现号码隐藏的PaaS平台。
 
 ## 术语
 
-缩写 | 含义
---|--
-ANH|Alias Number Hub（隐私号平台）
-XBR|X Binding Register（绑定关系注册表）
+缩写 | 含义 --|-- ANH|Alias Number Hub（隐私号平台） XBR|X Binding Register（绑定关系注册表）
 
 ## 组网图
 
@@ -60,10 +57,12 @@ http delete 127.0.0.1:9000/binding/6277d72d7482ed976805def6f0c5341e
 ```
 
 ## 使用的第三方库
+
 - [toml](https://github.com/BurntSushi/toml)：配置文件读取器。
 - [echo](https://echo.labstack.com/)：web框架。
 - [seelog](https://github.com/cihub/seelog)：日志中间件。
 - [gRPC](https://grpc.io/)。
+- [gomock](https://github.com/golang/mock)。
 
 ## 使用的技术
 
@@ -71,10 +70,11 @@ http delete 127.0.0.1:9000/binding/6277d72d7482ed976805def6f0c5341e
 - `anh/internal/pkg/mylog`：一个统一的日志入口，可用链式方式添加日志参数，用依赖注入方式对接第三方日志包（目前仅对接了seelog，使用JSON格式输出）。
 - `anh/internal/pkg/uuid`：一个随机串生成器，能生成大致按时间顺序排列的长度32的字符串（小写16进制，即`[0-9a-z]`。
 - `anh/internal/app/interface/user`：使用依赖注入避免了对xbr-service连接方式的直接依赖。
-- 开发了4个web中间件，每次`user-interface`收到HTTP请求：
+- `anh/internal/app/interface/user/handler_test.go`：使用gomock进行单元测试。
+- `anh/internal/app/interface/user/middleware.go`：开发了4个web中间件，每次`user-interface`收到HTTP请求：
     - 收到请求后立刻生成一个`sessionID`并保存到上下文中，该字段会出现在所有相关日志中。
     - 收到请求后先打印请求的method, path, header和body。
     - 发送响应后打印响应的statusCode和body。
     - 发送响应后打印本次请求的处理耗时。
-- 基于gRPC的元数据传输，在`user-interface`和`xbr-service`之间传递`sessionID`。
-- 使用context对gRPC的调用实现超时控制。
+- `anh/internal/app/interface/user/xbrclient/xbrclient.go`基于gRPC的元数据传输，在`user-interface`和`xbr-service`之间传递`sessionID`。
+- `anh/internal/app/interface/user/handler.go`：使用context对gRPC的调用实现超时控制。
