@@ -2,7 +2,11 @@
 
 package mylog
 
-var _logger *Logger
+var _logger = &Logger{
+	tags:     nil,
+	fields:   nil,
+	receiver: &dummyReceiver{},
+}
 
 func Init(receiver Receiver) {
 	_logger = &Logger{
